@@ -140,7 +140,12 @@ echo ">>> Installing Triton stack (torch, numpy, triton, cupy, datasets)"
 ask_continue "Install Python packages (torch, numpy, triton, cupy, datasets)?"
 
 pip install --upgrade pip
-pip install torch numpy triton cupy datasets
+CUDA_VER=$(nvidia-smi | sed -n 's/.*CUDA Version: \([0-9]\+\)\..*/\1/p' | head -n1)
+if [ "$CUDA_VER" = "12" ]; then
+  pip install torch numpy triton cupy-cuda12x datasets
+else
+  pip install torch numpy triton cupy-cuda11x datasets
+fi
 
 # =========================
 # Done
